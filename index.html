@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+<title>for baby 🎀</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;1,500;1,600;1,700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream: #fff8f4;
+    --beige: #ecdfc6;
+    --beige-deep: #c9a869;
+    --blush: #ffe1ea;
+    --rose: #ff7fa3;
+    --rose-deep: #e0527a;
+    --maroon: #8f2547;
+    --maroon-deep: #6c1834;
+    --plum: #4a2032;
+    --gold: #d8a655;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; }
+  body{
+    background:
+      radial-gradient(60% 50% at 12% 8%, rgba(255,225,234,0.85) 0%, rgba(255,225,234,0) 60%),
+      radial-gradient(55% 45% at 92% 12%, rgba(236,223,198,0.85) 0%, rgba(236,223,198,0) 60%),
+      radial-gradient(70% 60% at 50% 105%, rgba(255,204,218,0.55) 0%, rgba(255,204,218,0) 60%),
+      linear-gradient(160deg, #fffaf5 0%, #fbf1e8 40%, #fceef1 100%);
+    color:var(--plum);
+    font-family:'Quicksand', sans-serif;
+    min-height:100vh;
+    overflow:hidden;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    animation: bodyIn 1s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  @keyframes bodyIn{ to{ opacity:1; } }
+
+  .grain{
+    position:fixed; inset:0; z-index:2; pointer-events:none; opacity:0.028; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  #ambient{ position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden; }
+  .amb{
+    position:absolute; bottom:-40px; opacity:0;
+    animation: floatUp linear infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes floatUp{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg) scale(0.8); opacity:0; }
+    10%{ opacity:0.75; }
+    88%{ opacity:0.45; }
+    100%{ transform:translateY(-112vh) translateX(var(--drift,20px)) rotate(160deg) scale(1); opacity:0; }
+  }
+
+  #heartCanvas{
+    position:fixed; inset:0; width:100%; height:100%;
+    pointer-events:none; display:none; z-index:3;
+    filter: drop-shadow(0 0 6px rgba(143,37,71,0.28));
+  }
+  #heartCanvas.heart-frozen{
+    animation: heartBreathe 9.5s ease-in-out infinite;
+    transform-origin: 50% 46%;
+  }
+  @keyframes heartBreathe{
+    0%{ transform: scale(1) rotate(0deg); }
+    25%{ transform: scale(1.011) rotate(0.8deg); }
+    50%{ transform: scale(1) rotate(0deg); }
+    75%{ transform: scale(1.011) rotate(-0.8deg); }
+    100%{ transform: scale(1) rotate(0deg); }
+  }
+
+  .glow-text{ text-shadow:0 0 14px rgba(224,82,122,0.4), 0 0 30px rgba(224,82,122,0.2); }
+
+  .scene{ transition: opacity .55s cubic-bezier(.4,0,.2,1), filter .55s cubic-bezier(.4,0,.2,1), transform .55s cubic-bezier(.4,0,.2,1); }
+  .scene-hidden{ opacity:0 !important; filter:blur(10px); transform:scale(1.02); pointer-events:none; }
+  .scene-entering{ opacity:0; filter:blur(10px); transform:scale(0.97); }
+
+  /* ---------- sound toggle ---------- */
+  #soundToggle{
+    position:fixed; top:20px; right:20px; z-index:50;
+    width:42px; height:42px; border-radius:50%;
+    background:rgba(255,255,255,0.55);
+    border:1px solid rgba(255,255,255,0.8);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    display:none;
+    align-items:center; justify-content:center;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 8px 22px rgba(143,37,71,0.16);
+    transition:transform .2s ease;
+  }
+  #soundToggle:active{ transform:scale(0.92); }
+
+  /* ---------- SCENE 1: INTRO ---------- */
+  #scene-intro{ width:100%; max-width:480px; padding:36px; text-align:center; z-index:20; position:relative; }
+  .intro-kicker{ font-size:12.5px; letter-spacing:3.2px; text-transform:uppercase; color:var(--maroon); opacity:0.7; margin-bottom:18px; font-weight:600; }
+  #letterLine{ font-family:'Playfair Display', serif; font-style:italic; font-weight:500; font-size:clamp(26px, 6.4vw, 34px); color:var(--plum); min-height:44px; }
+  #introCursor{ display:inline-block; width:2px; height:1em; vertical-align:-0.15em; background:var(--maroon); animation: blink 1s step-end infinite; margin-left:2px; }
+  @keyframes blink{ from,to{ opacity:1; } 50%{ opacity:0; } }
+
+  #introBelow{ margin-top:30px; display:none; flex-direction:column; align-items:center; gap:17px; opacity:0; animation: fadeUp .8s cubic-bezier(.16,1,.3,1) forwards; }
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
+  .intro-sub{ font-size:15px; color:rgba(74,32,50,0.6); }
+
+  #openBtn{
+    display:inline-flex; align-items:center; gap:10px; padding:16px 34px; border:none; border-radius:999px;
+    background:linear-gradient(135deg, var(--rose) 0%, var(--maroon) 100%);
+    color:#fff; font-family:'Quicksand', sans-serif; font-weight:700; font-size:14.5px; letter-spacing:0.3px;
+    cursor:pointer; box-shadow:0 12px 28px rgba(143,37,71,0.32);
+    transition: transform .18s cubic-bezier(.16,1,.3,1), box-shadow .3s ease;
+  }
+  #openBtn:active{ transform:scale(0.96); }
+  .tap-hint{ font-size:11.5px; color:rgba(74,32,50,0.32); animation: pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ opacity:0.4; } 50%{ opacity:0.9; } }
+
+  /* ---------- SCENE 2: REVEAL / MEMORIES / QUESTION ---------- */
+  #scene-reveal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:15; text-align:center; }
+
+  #revealLabel{ opacity:0; transition:opacity 1.3s cubic-bezier(.16,1,.3,1); position:absolute; }
+  #revealLabel.show{ opacity:1; }
+  #revealLabel .kicker{ font-size:12.5px; letter-spacing:3.2px; text-transform:uppercase; color:var(--maroon); opacity:0.75; margin-bottom:8px; font-weight:600; }
+  #revealLabel h2{ font-family:'Playfair Display', serif; font-style:italic; font-weight:500; color:var(--maroon); font-size:26px; }
+
+  /* ---- memories collage ---- */
+  #memoriesPanel{
+    display:none;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1);
+    max-width:640px;
+    padding:0 24px;
+  }
+  #memoriesPanel.show{ display:block; opacity:1; transform:translateY(0); }
+  .memories-kicker{ font-size:12.5px; letter-spacing:3px; text-transform:uppercase; color:var(--maroon); opacity:0.75; font-weight:600; margin-bottom:22px; }
+  .polaroid-row{ display:flex; flex-wrap:wrap; gap:16px; justify-content:center; align-items:flex-end; }
+
+  .polaroid{
+    background:#fffdfb;
+    padding:9px 9px 30px;
+    border-radius:2px;
+    box-shadow:0 16px 34px rgba(143,37,71,0.22);
+    width:118px;
+    opacity:0;
+    position:relative;
+    transform:translateY(24px) scale(0.88) rotate(var(--r,0deg));
+    animation: polaroidIn .75s cubic-bezier(.16,1,.3,1) forwards;
+    animation-delay: var(--d, 0s);
+  }
+  .polaroid img{ width:100%; height:132px; object-fit:cover; display:block; border-radius:1px; }
+  .polaroid .cap{
+    position:absolute; bottom:8px; left:0; right:0; text-align:center;
+    font-family:'Caveat', cursive; font-size:13px; color:var(--maroon); font-weight:600;
+  }
+  .polaroid-native{
+    width:118px;
+    border-radius:6px;
+    overflow:hidden;
+    box-shadow:0 16px 34px rgba(143,37,71,0.22);
+    opacity:0;
+    transform:translateY(24px) scale(0.88) rotate(var(--r,0deg));
+    animation: polaroidIn .75s cubic-bezier(.16,1,.3,1) forwards;
+    animation-delay: var(--d, 0s);
+  }
+  .polaroid-native img{ width:100%; height:150px; object-fit:cover; display:block; }
+  @keyframes polaroidIn{
+    to{ opacity:1; transform:translateY(0) scale(1) rotate(var(--r,0deg)); }
+  }
+
+  #tiltWrap{ transition: transform .22s cubic-bezier(.16,1,.3,1); will-change: transform; transform-style: preserve-3d; }
+
+  #questionBox{
+    display:none; max-width:480px; padding:40px 34px; opacity:0;
+    transform:translateY(20px) scale(0.97);
+    transition:opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1);
+    background:rgba(255,255,255,0.6);
+    border:1px solid rgba(255,255,255,0.85);
+    backdrop-filter:blur(22px) saturate(150%);
+    -webkit-backdrop-filter:blur(22px) saturate(150%);
+    border-radius:26px;
+    box-shadow:0 24px 70px rgba(143,37,71,0.2), inset 0 1px 0 rgba(255,255,255,0.85);
+    position:relative; overflow:hidden;
+  }
+  #questionBox::before{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.35) 45%, transparent 60%);
+    background-size:220% 100%; background-position:150% 0; pointer-events:none;
+  }
+  #questionBox.show{ display:block; opacity:1; transform:translateY(0) scale(1); }
+  #questionBox.show::before{ animation: sheen 1.8s ease-out .3s 1; }
+  @keyframes sheen{ 0%{ background-position:150% 0; } 100%{ background-position:-50% 0; } }
+
+  .msg-tag{ font-size:11.5px; letter-spacing:1.8px; color:var(--maroon); opacity:0.65; margin-bottom:13px; font-weight:600; }
+  .to-name{ font-family:'Playfair Display', serif; font-style:italic; font-weight:600; color:var(--maroon); font-size:clamp(34px, 8vw, 48px); margin-bottom:6px; }
+  .fav-note{ font-family:'Caveat', cursive; font-size:16.5px; color:var(--beige-deep); margin-bottom:20px; font-weight:600; }
+  .msg-body{ color:rgba(74,32,50,0.78); font-size:15px; line-height:1.8; margin-bottom:5px; }
+  .msg-body .pet{ font-family:'Caveat', cursive; font-size:1.35em; color:var(--maroon); font-weight:700; }
+  .the-question{ color:var(--plum); font-size:20px; margin:28px 0; font-weight:700; }
+
+  .btn-row{ display:flex; align-items:center; justify-content:center; gap:16px; position:relative; }
+
+  #yesBtn{
+    padding:16px 32px; border:none; border-radius:999px;
+    background:linear-gradient(135deg, var(--rose) 0%, var(--maroon) 100%);
+    color:#fff; font-family:'Quicksand', sans-serif; font-weight:700; font-size:14.5px;
+    cursor:pointer; box-shadow:0 12px 26px rgba(143,37,71,0.3);
+    transition: box-shadow .3s ease, font-size .3s ease, padding .3s ease;
+  }
+  #yesBtnInner{ display:block; transition: transform .12s ease-out; }
+
+  #noBtn{
+    padding:16px 26px; border:1.5px solid rgba(74,32,50,0.18); border-radius:999px;
+    background:rgba(255,255,255,0.55); color:rgba(74,32,50,0.55);
+    font-family:'Quicksand', sans-serif; font-weight:600; font-size:14.5px; cursor:pointer;
+    transition: left .3s cubic-bezier(.34,1.56,.64,1), top .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  #noBtn.dodging{ position:fixed; z-index:40; }
+
+  .dodge-toast{
+    position:fixed; z-index:41; padding:8px 16px; background:var(--maroon); color:#fff;
+    font-size:12.5px; font-weight:600; border-radius:999px; box-shadow:0 8px 20px rgba(143,37,71,0.35);
+    opacity:0; transform:translateY(6px) scale(0.9);
+    transition: opacity .25s cubic-bezier(.16,1,.3,1), transform .25s cubic-bezier(.16,1,.3,1);
+    pointer-events:none; white-space:nowrap;
+  }
+  .dodge-toast.show{ opacity:1; transform:translateY(0) scale(1); }
+
+  /* ---------- SCENE 3: YES ---------- */
+  #scene-yes{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:25; text-align:center; }
+  .yes-emoji{ font-size:50px; margin-bottom:6px; animation: pop .65s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes pop{ 0%{ transform:scale(0) rotate(-15deg); } 60%{ transform:scale(1.2) rotate(4deg); } 100%{ transform:scale(1) rotate(0deg); } }
+
+  .stamp{
+    display:inline-flex; align-items:center; gap:6px; padding:6px 16px;
+    border:1.5px solid var(--maroon); border-radius:999px; color:var(--maroon);
+    font-size:11px; font-weight:700; letter-spacing:1.8px; text-transform:uppercase;
+    transform:rotate(-4deg); margin-bottom:16px; opacity:0;
+    animation: stampIn .5s cubic-bezier(.34,1.56,.64,1) .35s forwards;
+  }
+  @keyframes stampIn{ from{ opacity:0; transform:rotate(-4deg) scale(0.7); } to{ opacity:1; transform:rotate(-4deg) scale(1); } }
+
+  .yes-title{ font-family:'Playfair Display', serif; font-style:italic; font-weight:600; color:var(--maroon); font-size:clamp(36px, 8.6vw, 56px); margin-bottom:16px; }
+  .yes-sub{ color:rgba(74,32,50,0.78); font-size:15px; max-width:400px; margin:0 auto; line-height:1.8; }
+
+  #confettiLayer{ position:fixed; inset:0; pointer-events:none; z-index:30; overflow:hidden; }
+  .confetti-piece{ position:absolute; top:-30px; animation: confettiFall linear infinite; will-change:transform; filter: drop-shadow(0 2px 3px rgba(143,37,71,0.2)); }
+  @keyframes confettiFall{
+    0%{ transform:translate(0,0) rotate(0deg); opacity:0.95; }
+    30%{ transform:translate(var(--sway1,18px), 32vh) rotate(120deg); }
+    65%{ transform:translate(var(--sway2,-18px), 68vh) rotate(230deg); }
+    100%{ transform:translate(0, 108vh) rotate(360deg); opacity:0.85; }
+  }
+
+  @media (max-width: 520px){
+    #questionBox{ padding:32px 24px; border-radius:22px; }
+    #tiltWrap{ transform:none !important; }
+    .polaroid, .polaroid-native{ width:98px; }
+    .polaroid img{ height:112px; }
+    .polaroid-native img{ height:128px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div id="ambient"></div>
+<canvas id="heartCanvas"></canvas>
+<button id="soundToggle">🔊</button>
+<audio id="bgm" loop preload="auto">
+  <source src="assets/song.mp3" type="audio/mpeg">
+</audio>
+
+<!-- SCENE 1 -->
+<div id="scene-intro" class="scene">
+  <div class="intro-kicker">a little something for my baby</div>
+  <div id="letterLine"><span id="introCursor"></span></div>
+
+  <div id="introBelow">
+    <p class="intro-sub">i made you something, baby 🎀</p>
+    <button id="openBtn">open mo mweheh ✨</button>
+    <p class="tap-hint">or just tap anywhere</p>
+  </div>
+</div>
+
+<!-- SCENE 2 -->
+<div id="scene-reveal" class="scene">
+  <div id="revealLabel">
+    <div class="kicker">for you</div>
+    <h2 class="glow-text">every language, one meaning 💌</h2>
+  </div>
+
+  <div id="memoriesPanel">
+    <div class="memories-kicker">a few of my favorite moments with you</div>
+    <div class="polaroid-row">
+      <div class="polaroid-native" style="--r:-7deg; --d:0s;">
+        <img src="assets/memory-1.jpg" alt="">
+      </div>
+      <div class="polaroid" style="--r:5deg; --d:.12s;">
+        <img src="assets/memory.gif" alt="">
+        <div class="cap">us 🩷</div>
+      </div>
+      <div class="polaroid" style="--r:-4deg; --d:.24s;">
+        <img src="assets/memory-2.jpg" alt="">
+        <div class="cap">happy birthday, love</div>
+      </div>
+      <div class="polaroid" style="--r:6deg; --d:.36s;">
+        <img src="assets/memory-3.jpg" alt="">
+        <div class="cap">that day 🌸</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tiltWrap">
+    <div id="questionBox">
+      <div class="msg-tag">🎀 a little secret</div>
+      <div class="to-name glow-text">baby</div>
+      <div class="fav-note">beige &amp; peonies kind of girl 🌸</div>
+      <p class="msg-body">sa bawat away at pagtatalo natin, mas tumitibay ang pagmamahal ko sa'yo.</p>
+      <p class="msg-body">i love you, <span class="pet">baby</span>. i love you, <span class="pet">love</span>. today, tomorrow, forever 🩷</p>
+      <p class="the-question">will you be my girlfriend? 🥹💗</p>
+
+      <div class="btn-row">
+        <button id="yesBtn"><span id="yesBtnInner">Yes, always 🩷</span></button>
+        <button id="noBtn">no</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCENE 3 -->
+<div id="scene-yes" class="scene">
+  <div>
+    <div class="yes-emoji">🎀💗</div>
+    <div class="stamp">✓ officially taken</div>
+    <div class="yes-title glow-text">FUCK YEAHHH!</div>
+    <p class="yes-sub">mahal kita, baby. forever starts today, baby. sa'yo lang lahat 🩷</p>
+  </div>
+</div>
+<div id="confettiLayer"></div>
+<div id="dodgeToast" class="dodge-toast"></div>
+
+<script>
+(function(){
+  // ---------- background music ----------
+  // true silent autoplay is blocked by every modern browser — the earliest
+  // it can legally start is the first tap, so we fire it from the exact
+  // same tap that opens the letter. that's functionally as close to
+  // "autoplay on open" as the web allows.
+  const bgm = document.getElementById('bgm');
+  const soundToggle = document.getElementById('soundToggle');
+  let musicStarted = false;
+
+  function startMusic(){
+    if(musicStarted) return;
+    musicStarted = true;
+    bgm.volume = 0.55;
+    const p = bgm.play();
+    if(p && p.catch){
+      p.then(()=>{ soundToggle.style.display = 'flex'; })
+       .catch(()=>{ soundToggle.style.display = 'flex'; soundToggle.textContent = '🔇'; });
+    } else {
+      soundToggle.style.display = 'flex';
+    }
+  }
+
+  soundToggle.addEventListener('click', function(){
+    if(bgm.paused){
+      bgm.play().then(()=>{ soundToggle.textContent = '🔊'; }).catch(()=>{});
+    } else {
+      bgm.pause();
+      soundToggle.textContent = '🔇';
+    }
+  });
+  bgm.addEventListener('pause', ()=>{ if(musicStarted) soundToggle.textContent = '🔇'; });
+  bgm.addEventListener('play', ()=>{ soundToggle.textContent = '🔊'; });
+
+  // ---------- ambient floating sparkles ----------
+  const ambient = document.getElementById('ambient');
+  const ambEmojis = ['✨','🩷','🌸'];
+  for(let i=0;i<10;i++){
+    const s = document.createElement('div');
+    s.className = 'amb';
+    s.textContent = ambEmojis[Math.floor(Math.random()*ambEmojis.length)];
+    s.style.left = Math.random()*100+'vw';
+    s.style.setProperty('--drift', (Math.random()*90-45)+'px');
+    s.style.animationDuration = (12+Math.random()*11)+'s';
+    s.style.animationDelay = (Math.random()*12)+'s';
+    s.style.fontSize = (12+Math.random()*15)+'px';
+    ambient.appendChild(s);
+  }
+
+  // ---------- intro typewriter ----------
+  const letterLine = document.getElementById('letterLine');
+  const introCursor = document.getElementById('introCursor');
+  const fullText = "dear lovey,";
+  let i = 0;
+  let consoleFinished = false;
+
+  function typeChar(){
+    if(i < fullText.length){
+      letterLine.insertBefore(document.createTextNode(fullText[i]), introCursor);
+      i++;
+      setTimeout(typeChar, 58);
+    } else {
+      introCursor.style.display = 'none';
+      document.getElementById('introBelow').style.display = 'flex';
+      consoleFinished = true;
+    }
+  }
+  setTimeout(typeChar, 550);
+
+  // ---------- cinematic scene transition helper ----------
+  function dissolve(hideEl, showEl, showDisplay){
+    hideEl.classList.add('scene-hidden');
+    setTimeout(()=>{
+      hideEl.style.display = 'none';
+      showEl.style.display = showDisplay;
+      showEl.classList.add('scene-entering');
+      void showEl.offsetWidth;
+      requestAnimationFrame(()=>{ showEl.classList.remove('scene-entering'); });
+    }, 560);
+  }
+
+  // ---------- scene switching ----------
+  const sceneIntro = document.getElementById('scene-intro');
+  const sceneReveal = document.getElementById('scene-reveal');
+  const sceneYes = document.getElementById('scene-yes');
+  const heartCanvas = document.getElementById('heartCanvas');
+  const revealLabel = document.getElementById('revealLabel');
+  const memoriesPanel = document.getElementById('memoriesPanel');
+  const questionBox = document.getElementById('questionBox');
+
+  let revealed = false;
+
+  function goReveal(){
+    if(revealed) return;
+    revealed = true;
+    startMusic();
+    dissolve(sceneIntro, sceneReveal, 'flex');
+    heartCanvas.style.display = 'block';
+    startHeart();
+    setTimeout(()=> revealLabel.classList.add('show'), 700);
+    setTimeout(goMemories, 4600);
+  }
+
+  function goMemories(){
+    revealLabel.classList.remove('show');
+    setTimeout(()=>{ revealLabel.style.display = 'none'; }, 500);
+    memoriesPanel.classList.add('show');
+    setTimeout(goQuestion, 4400);
+  }
+
+  function goQuestion(){
+    memoriesPanel.style.transition = 'opacity .6s ease, transform .6s ease';
+    memoriesPanel.classList.remove('show');
+    memoriesPanel.style.opacity = '0';
+    memoriesPanel.style.transform = 'translateY(-10px)';
+    setTimeout(()=>{ memoriesPanel.style.display = 'none'; }, 600);
+    questionBox.classList.add('show');
+  }
+
+  document.body.addEventListener('click', function(e){
+    if(!revealed && consoleFinished){
+      burstSparkles(e.clientX, e.clientY);
+      goReveal();
+    }
+  });
+  document.getElementById('openBtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    burstSparkles(e.clientX, e.clientY);
+    goReveal();
+  });
+
+  function burstSparkles(x, y){
+    const icons = ['✨','🩷','🌸'];
+    const count = 10;
+    for(let k=0; k<count; k++){
+      const s = document.createElement('span');
+      s.textContent = icons[Math.floor(Math.random()*icons.length)];
+      const angle = (Math.PI*2*k)/count + Math.random()*0.4;
+      const dist = 46 + Math.random()*38;
+      s.style.cssText = `position:fixed; left:${x}px; top:${y}px; font-size:${12+Math.random()*8}px; pointer-events:none; z-index:60; opacity:1; transform:translate(-50%,-50%); transition: transform .65s cubic-bezier(.16,1,.3,1), opacity .65s ease;`;
+      document.body.appendChild(s);
+      requestAnimationFrame(()=>{
+        s.style.transform = `translate(calc(-50% + ${Math.cos(angle)*dist}px), calc(-50% + ${Math.sin(angle)*dist}px)) scale(0.5)`;
+        s.style.opacity = '0';
+      });
+      setTimeout(()=> s.remove(), 700);
+    }
+  }
+
+  // ---------- 3D tilt on the question card ----------
+  const tiltWrap = document.getElementById('tiltWrap');
+  let tiltActive = false;
+  questionBox.addEventListener('transitionend', function(e){
+    if(e.propertyName === 'opacity' && questionBox.classList.contains('show')) tiltActive = true;
+  });
+  window.addEventListener('mousemove', function(e){
+    if(!tiltActive) return;
+    const r = questionBox.getBoundingClientRect();
+    const relX = (e.clientX - r.left) / r.width;
+    const relY = (e.clientY - r.top) / r.height;
+    if(relX < -0.3 || relX > 1.3 || relY < -0.3 || relY > 1.3){
+      tiltWrap.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+      return;
+    }
+    const maxTilt = 5;
+    const rx = (0.5 - relY) * maxTilt;
+    const ry = (relX - 0.5) * maxTilt;
+    tiltWrap.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+  }, { passive:true });
+
+  // ---------- magnetic yes button ----------
+  const yesBtn = document.getElementById('yesBtn');
+  const yesBtnInner = document.getElementById('yesBtnInner');
+  yesBtn.addEventListener('mousemove', function(e){
+    const r = yesBtn.getBoundingClientRect();
+    const relX = (e.clientX - r.left) / r.width - 0.5;
+    const relY = (e.clientY - r.top) / r.height - 0.5;
+    yesBtnInner.style.transform = `translate(${relX*8}px, ${relY*8}px)`;
+  }, { passive:true });
+  yesBtn.addEventListener('mouseleave', function(){
+    yesBtnInner.style.transform = 'translate(0,0)';
+  });
+
+  // ============================================================
+  // TEXT-PARTICLE HEART
+  // ============================================================
+  const PHRASES = [
+    "i love you","mahal kita","te amo","je t'aime","ti amo","ich liebe dich",
+    "aishiteru","saranghae","wo ai ni","gihigugma tika","eu te amo",
+    "ya tebya lyublyu","aku sayang kamu","anh yeu em","ik hou van je",
+    "kocham cie","seni seviyorum","nakupenda","baby","love",
+    "forever","mine","🩷","✨","🌸"
+  ];
+  const randomPhrase = () => PHRASES[Math.floor(Math.random()*PHRASES.length)];
+
+  const ctx = heartCanvas.getContext('2d', { alpha: true });
+  const HEART_FONT = `13px "Quicksand", sans-serif`;
+  let points = [];
+  let lastTime = null;
+  let elapsedTotal = 0;
+  let frameDt = 0.016;
+  let frozen = false;
+  const FREEZE_AFTER = 5.0;
+  const isCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  const DPR = Math.min(window.devicePixelRatio || 1, isCoarsePointer ? 1.75 : 2.25);
+
+  function heartXY(t){
+    const x = 16 * Math.pow(Math.sin(t), 3);
+    const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+    return [x, y];
+  }
+
+  function computeBounds(){
+    let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
+    for(let t=0; t<Math.PI*2; t+=0.01){
+      const [x,y] = heartXY(t);
+      if(x<minX) minX=x; if(x>maxX) maxX=x;
+      if(y<minY) minY=y; if(y>maxY) maxY=y;
+    }
+    return { cx:(minX+maxX)/2, cy:(minY+maxY)/2, w:(maxX-minX), h:(maxY-minY) };
+  }
+  const BOUNDS = computeBounds();
+  const RING_COLORS = ['143,37,71', '224,82,122', '255,143,176'];
+
+  // choreography constants: the outline sweeps around like it's being
+  // traced, then the inside fills in shortly after (slight overlap so it
+  // reads as one continuous motion rather than two disjointed phases)
+  const SWEEP_DURATION = 1.5;
+  const FILL_START = 1.05;
+  const FILL_DURATION = 1.9;
+
+  function initPoints(cssW, cssH){
+    points = [];
+    const scale = Math.min((cssW * 0.62) / BOUNDS.w, (cssH * 0.5) / BOUNDS.h);
+    ctx.font = HEART_FONT;
+
+    const push = (t, s, alphaBase, alphaVar, delay, settleMax, colorIdx) => {
+      const [rx, ry] = heartXY(t);
+      const x = (rx - BOUNDS.cx) * s;
+      const y = (ry - BOUNDS.cy) * s;
+      const phrase = randomPhrase();
+      points.push({
+        bx: x*scale, by: y*scale,
+        alpha:0, targetAlpha: alphaBase + Math.random()*alphaVar,
+        delay,
+        settle: 12 + Math.random()*settleMax,
+        phrase, width: ctx.measureText(phrase).width,
+        color: RING_COLORS[colorIdx]
+      });
+    };
+
+    // outline traces itself around the curve, progress-ordered by angle
+    for(let t=0; t<Math.PI*2; t+=0.05){
+      const progress = t / (Math.PI*2);
+      const delay = progress * SWEEP_DURATION + Math.random()*0.1;
+      push(t, 1, 0.85, 0.15, delay, 10, 0);
+    }
+
+    // inner fill cascades in, ring by ring, with a gentle angular stagger
+    let ring = 1;
+    let ringIndex = 0;
+    const totalRings = Math.ceil((1 - 0.24) / 0.22);
+    for(let s=0.24; s<1; s+=0.22){
+      const ringProgress = ringIndex / Math.max(1, totalRings - 1);
+      for(let t=0; t<Math.PI*2; t+=0.125){
+        const angleJitter = (t / (Math.PI*2)) * 0.35;
+        const delay = FILL_START + ringProgress * FILL_DURATION + angleJitter + Math.random()*0.25;
+        push(t, s, 0.28, 0.38, delay, 14, ring);
+      }
+      ring = ring === 1 ? 2 : 1;
+      ringIndex++;
+    }
+  }
+
+  function resizeCanvas(){
+    const cssW = window.innerWidth;
+    const cssH = window.innerHeight;
+    heartCanvas.width = Math.floor(cssW * DPR);
+    heartCanvas.height = Math.floor(cssH * DPR);
+    heartCanvas.style.width = cssW + 'px';
+    heartCanvas.style.height = cssH + 'px';
+    initPoints(cssW, cssH);
+    if(frozen){
+      frozen = false;
+      heartCanvas.classList.remove('heart-frozen');
+      elapsedTotal = 0;
+      lastTime = null;
+      requestAnimationFrame(draw);
+    }
+  }
+
+  let mouseX = 0, mouseY = 0;
+  let lastSparkleTime = 0;
+  const SPARKLE_ICONS = ['✨','🩷'];
+  window.addEventListener('mousemove', (e)=>{
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+
+    if(isCoarsePointer || !revealed) return;
+    const now = performance.now();
+    if(now - lastSparkleTime < 110) return;
+    lastSparkleTime = now;
+    const s = document.createElement('span');
+    s.textContent = SPARKLE_ICONS[Math.floor(Math.random()*SPARKLE_ICONS.length)];
+    s.style.cssText = `position:fixed; left:${e.clientX}px; top:${e.clientY}px; font-size:${9+Math.random()*7}px; pointer-events:none; z-index:60; opacity:0.85; transform:translate(-50%,-50%); transition: transform .7s cubic-bezier(.16,1,.3,1), opacity .7s ease;`;
+    document.body.appendChild(s);
+    requestAnimationFrame(()=>{
+      s.style.transform = `translate(-50%, calc(-50% - ${18+Math.random()*14}px)) scale(0.4)`;
+      s.style.opacity = '0';
+    });
+    setTimeout(()=> s.remove(), 750);
+  }, { passive:true });
+
+  function easeOutCubic(x){ return 1 - Math.pow(1 - x, 3); }
+  // gentle overshoot — gives each letter a tiny, cute "pop" as it settles
+  function easeOutSoftBack(x){
+    const c1 = 1.15, c3 = c1 + 1;
+    return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+  }
+
+  function drawFrame(){
+    const cssW = window.innerWidth;
+    const cssH = window.innerHeight;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, cssW, cssH);
+
+    const breathe = frozen ? 1 : 1 + Math.sin(elapsedTotal * 0.9) * 0.014;
+    const rotate = frozen ? 0 : Math.sin(elapsedTotal * 0.2) * 0.035;
+    const parallaxX = frozen ? 0 : mouseX * 8;
+    const parallaxY = frozen ? 0 : mouseY * 5;
+
+    const cx = cssW / 2 + parallaxX;
+    const cy = cssH * 0.4 + parallaxY;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rotate);
+    ctx.scale(breathe, breathe);
+    ctx.font = HEART_FONT;
+    ctx.textBaseline = 'middle';
+
+    const alphaRate = 2.2;
+
+    for(let idx=0; idx<points.length; idx++){
+      const p = points[idx];
+      if(elapsedTotal > p.delay){
+        p.alpha += (p.targetAlpha - p.alpha) * (1 - Math.exp(-alphaRate * frameDt));
+      }
+      if(frozen) p.alpha = p.targetAlpha;
+      if(p.alpha < 0.006) continue;
+
+      const settleT = Math.min(1, Math.max(0, (elapsedTotal - p.delay) / 0.85));
+      const eased = frozen ? 1 : easeOutSoftBack(settleT);
+      const offsetY = (1 - eased) * p.settle;
+
+      ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+      ctx.fillText(p.phrase, p.bx - p.width/2, p.by - offsetY);
+    }
+
+    ctx.restore();
+  }
+
+  function draw(time){
+    if(lastTime === null) lastTime = time;
+    const dt = Math.min((time - lastTime) / 1000, 0.05);
+    lastTime = time;
+    elapsedTotal += dt;
+    frameDt = dt > 0 ? dt : 0.016;
+
+    drawFrame();
+
+    if(elapsedTotal >= FREEZE_AFTER){
+      frozen = true;
+      elapsedTotal = FREEZE_AFTER;
+      drawFrame();
+      heartCanvas.classList.add('heart-frozen');
+      return;
+    }
+    requestAnimationFrame(draw);
+  }
+
+  let resizeTimer = null;
+  function debouncedResize(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resizeCanvas, 180);
+  }
+
+  function startHeart(){
+    window.addEventListener('resize', debouncedResize);
+    resizeCanvas();
+    lastTime = null;
+    elapsedTotal = 0;
+    frozen = false;
+    requestAnimationFrame(draw);
+  }
+
+  // ---------- yes / no ----------
+  const noBtn = document.getElementById('noBtn');
+  const dodgeToast = document.getElementById('dodgeToast');
+  const captions = [
+    "luh siya! 😏","AYUSIN MO NAMAN","ih 💗","epal ehh","sabi na eh",
+    "ayos ka lang ba?","yan siya"
+  ];
+  let dodgeCount = 0;
+
+  function dodgeNoButton(){
+    dodgeCount++;
+    noBtn.classList.add('dodging');
+    const w = noBtn.offsetWidth || 90;
+    const h = noBtn.offsetHeight || 46;
+    const margin = 24;
+    const maxX = window.innerWidth - w - margin;
+    const maxY = window.innerHeight - h - margin;
+    const x = margin + Math.random()*Math.max(1, maxX-margin);
+    const y = margin + Math.random()*Math.max(1, maxY-margin);
+    noBtn.style.left = x+'px';
+    noBtn.style.top = y+'px';
+
+    const caption = captions[Math.min(dodgeCount-1, captions.length-1)];
+    dodgeToast.textContent = caption;
+    dodgeToast.style.left = (x + w/2 - dodgeToast.offsetWidth/2) + 'px';
+    dodgeToast.style.top = (y - 40) + 'px';
+    dodgeToast.classList.remove('show');
+    void dodgeToast.offsetWidth;
+    dodgeToast.classList.add('show');
+
+    const growth = Math.min(1.26, 1 + dodgeCount*0.032);
+    yesBtn.style.fontSize = (14.5*growth)+'px';
+    yesBtn.style.padding = (16*growth)+'px '+(32*growth)+'px';
+  }
+
+  noBtn.addEventListener('mouseenter', dodgeNoButton);
+  noBtn.addEventListener('touchstart', function(e){ e.preventDefault(); dodgeNoButton(); }, {passive:false});
+  noBtn.addEventListener('click', function(e){ e.preventDefault(); dodgeNoButton(); });
+
+  function launchConfetti(){
+    const layer = document.getElementById('confettiLayer');
+    const icons = ['🩷','💗','✨','🎀','💌','🌸'];
+    for(let k=0;k<34;k++){
+      const el = document.createElement('span');
+      el.className = 'confetti-piece';
+      el.textContent = icons[Math.floor(Math.random()*icons.length)];
+      el.style.left = (Math.random()*100)+'vw';
+      el.style.fontSize = (13+Math.random()*16)+'px';
+      el.style.setProperty('--sway1', (Math.random()*60-30)+'px');
+      el.style.setProperty('--sway2', (Math.random()*60-30)+'px');
+      el.style.animationDuration = (3+Math.random()*2.2)+'s';
+      el.style.animationDelay = (Math.random()*1.2)+'s';
+      layer.appendChild(el);
+      setTimeout(()=>el.remove(), 6500);
+    }
+  }
+
+  yesBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    dissolve(sceneReveal, sceneYes, 'flex');
+    setTimeout(()=>{
+      launchConfetti();
+      setInterval(launchConfetti, 3000);
+    }, 560);
+  });
+})();
+</script>
+
+</body>
+</html>
