@@ -58,7 +58,7 @@
 
   /* ---------- chapter progress dots ---------- */
   #progressDots{
-    position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:50;
+    position:fixed; bottom: calc(22px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); z-index:50;
     display:flex; gap:9px;
     opacity:0; transition:opacity .6s ease;
   }
@@ -69,6 +69,66 @@
     transition: background .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1);
   }
   #progressDots .dot.active{ background:var(--maroon); transform:scale(1.35); }
+
+  /* ---------- dusk sky: clouds, moon, stars ---------- */
+  .sky-clouds{ position:fixed; inset:0; z-index:1; overflow:hidden; pointer-events:none; }
+  .cloud{
+    position:absolute;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 80'%3E%3Cdefs%3E%3Cfilter id='b'%3E%3CfeGaussianBlur stdDeviation='6'/%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23b)' fill='white'%3E%3Cellipse cx='60' cy='50' rx='55' ry='26'/%3E%3Cellipse cx='112' cy='36' rx='46' ry='30'/%3E%3Cellipse cx='152' cy='50' rx='38' ry='22'/%3E%3Cellipse cx='90' cy='56' rx='60' ry='20'/%3E%3C/g%3E%3C/svg%3E");
+    background-size:contain; background-repeat:no-repeat;
+    animation: cloudDrift linear infinite;
+    will-change: transform;
+  }
+  @keyframes cloudDrift{
+    from{ transform:translateX(-32vw); }
+    to{ transform:translateX(132vw); }
+  }
+
+  .moon{
+    position:fixed; z-index:1;
+    background: radial-gradient(circle at 35% 32%, #fffdf6 0%, #fff2d6 55%, #ffe6b8 100%);
+    border-radius:50%;
+    filter: drop-shadow(0 0 22px rgba(255,238,196,0.65)) drop-shadow(0 0 48px rgba(255,220,170,0.35));
+    animation: moonGlow 6.5s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes moonGlow{ 0%,100%{ opacity:0.92; } 50%{ opacity:1; } }
+
+  .stars-layer{ position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+  .star{
+    position:absolute; background:#fff; border-radius:50%;
+    animation: starTwinkle ease-in-out infinite;
+  }
+  @keyframes starTwinkle{
+    0%,100%{ opacity:0.15; transform:scale(0.7); }
+    50%{ opacity:0.95; transform:scale(1.2); }
+  }
+  .star-burst{ animation: starBurstIn .9s cubic-bezier(.16,1,.3,1) forwards, starTwinkle 2.2s ease-in-out infinite .9s; }
+  @keyframes starBurstIn{ from{ opacity:0; transform:scale(0); } to{ opacity:0.95; transform:scale(1); } }
+
+  #glitterCanvas{
+    position:fixed; inset:0; width:100%; height:100%;
+    z-index:2; pointer-events:none;
+  }
+
+  #fireworksCanvas{
+    position:fixed; inset:0; width:100%; height:100%;
+    z-index:26; pointer-events:none; display:none;
+  }
+
+  .shimmer-text{
+    background: linear-gradient(100deg, var(--maroon) 28%, #fff2c7 46%, #fffbe8 50%, #fff2c7 54%, var(--maroon) 72%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: textShimmer 4.2s ease-in-out infinite;
+  }
+  @keyframes textShimmer{
+    0%{ background-position: 220% 0; }
+    55%, 100%{ background-position: -40% 0; }
+  }
 
   .grain{
     position:fixed; inset:0; z-index:2; pointer-events:none; opacity:0.028; mix-blend-mode:multiply;
@@ -113,7 +173,10 @@
 
   /* ---------- sound toggle ---------- */
   #soundToggle{
-    position:fixed; top:20px; right:20px; z-index:50;
+    position:fixed;
+    top: calc(20px + env(safe-area-inset-top));
+    right: calc(20px + env(safe-area-inset-right));
+    z-index:50;
     width:42px; height:42px; border-radius:50%;
     background:rgba(255,255,255,0.55);
     border:1px solid rgba(255,255,255,0.8);
@@ -130,6 +193,64 @@
 
   /* ---------- SCENE 1: INTRO ---------- */
   #scene-intro{ width:100%; max-width:440px; padding:20px; text-align:center; z-index:20; position:relative; }
+
+  #envelopeStage{ display:flex; flex-direction:column; align-items:center; }
+  .envelope{
+    position:relative; width:190px; height:126px;
+    perspective:700px;
+    cursor:pointer;
+  }
+  .envelope-shadow{
+    position:absolute; left:8%; right:8%; bottom:-14px; height:18px;
+    background:radial-gradient(ellipse, rgba(143,37,71,0.28) 0%, rgba(143,37,71,0) 72%);
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .envelope-body{
+    position:absolute; inset:0;
+    background:linear-gradient(165deg, #fffdfa 0%, #fdf1e4 100%);
+    border:1px solid rgba(143,37,71,0.14);
+    border-radius:5px;
+    box-shadow:0 22px 46px rgba(143,37,71,0.2);
+    z-index:1;
+  }
+  .envelope-letter-peek{
+    position:absolute; left:11%; right:11%; bottom:6px; height:78%;
+    background:#fffefb;
+    border:1px solid rgba(143,37,71,0.1);
+    border-radius:2px;
+    box-shadow:0 -4px 14px rgba(143,37,71,0.08);
+    opacity:0;
+    transform:translateY(10%);
+    transition: opacity .55s ease .3s, transform .65s cubic-bezier(.16,1,.3,1) .3s;
+    z-index:2;
+  }
+  .envelope-flap{
+    position:absolute; top:0; left:0; width:100%; height:64px;
+    background:linear-gradient(165deg, #fff7ec 0%, #f8e3d1 100%);
+    clip-path:polygon(0 0, 100% 0, 50% 100%);
+    border-bottom:1px solid rgba(143,37,71,0.08);
+    transform-origin:top center;
+    transform-style:preserve-3d;
+    transition: transform .75s cubic-bezier(.6,0,.35,1);
+    z-index:4;
+  }
+  .envelope-seal{
+    position:absolute; top:16px; left:50%; transform:translateX(-50%);
+    width:36px; height:36px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--rose) 0%, var(--maroon) 70%);
+    display:flex; align-items:center; justify-content:center;
+    font-size:15px;
+    box-shadow:0 8px 16px rgba(143,37,71,0.4), inset 0 -3px 6px rgba(0,0,0,0.15);
+    z-index:5;
+    transition: opacity .3s ease, transform .3s ease;
+  }
+  .envelope.opened .envelope-flap{ transform: rotateX(-165deg); }
+  .envelope.opened .envelope-seal{ opacity:0; transform:translateX(-50%) scale(0.5); }
+  .envelope.opened .envelope-letter-peek{ opacity:1; transform:translateY(-46%); }
+  .envelope.opened .envelope-shadow{ opacity:0.6; transform:scaleX(1.15); }
+  .envelope:not(.opened):hover .envelope-shadow{ transform:scaleX(1.05); }
+  #envelopeHint{ margin-top:24px; }
+
   .letter-card{
     position:relative;
     background:
@@ -139,6 +260,14 @@
     border-radius:4px;
     padding:52px 34px 40px;
     box-shadow:0 30px 70px rgba(143,37,71,0.16), 0 2px 0 rgba(255,255,255,0.6) inset;
+    opacity:0;
+    transform:translateY(18px) scale(0.96);
+  }
+  .letter-card.show{
+    animation: letterCardIn .8s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  @keyframes letterCardIn{
+    to{ opacity:1; transform:translateY(0) scale(1); }
   }
   .letter-card::before{
     content:'';
@@ -193,6 +322,33 @@
   #memoriesPanel.show{ display:block; opacity:1; transform:translateY(0); }
   .memories-kicker{ font-size:12.5px; letter-spacing:3px; text-transform:uppercase; color:var(--maroon); opacity:0.75; font-weight:600; margin-bottom:22px; }
   .polaroid-row{ display:flex; flex-wrap:wrap; gap:16px; justify-content:center; align-items:flex-end; }
+
+  .reasons-row{ display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin-top:24px; max-width:520px; margin-left:auto; margin-right:auto; }
+  .reason-card{
+    position:relative;
+    background:#fffefb;
+    border:1px solid rgba(143,37,71,0.1);
+    border-radius:10px;
+    padding:16px 16px 14px;
+    width:148px;
+    box-shadow:0 14px 28px rgba(143,37,71,0.16);
+    font-family:'Caveat', cursive;
+    font-weight:600;
+    font-size:15px;
+    color:var(--plum);
+    line-height:1.32;
+    opacity:0;
+    transform:translateY(18px) rotate(var(--r,0deg)) scale(0.9);
+    animation: polaroidIn .7s cubic-bezier(.16,1,.3,1) forwards;
+    animation-delay: var(--d, 0s);
+  }
+  .reason-card::before{
+    content: 'reason #' attr(data-n);
+    position:absolute; top:-10px; left:12px;
+    background:var(--maroon); color:#fff;
+    font-family:'Quicksand', sans-serif; font-size:8.5px; font-weight:700;
+    letter-spacing:1px; padding:3px 9px; border-radius:999px; text-transform:uppercase;
+  }
 
   .polaroid{
     background:#fffdfb;
@@ -312,6 +468,20 @@
 
   .yes-title{ font-family:'Playfair Display', serif; font-style:italic; font-weight:600; color:var(--maroon); font-size:clamp(36px, 8.6vw, 56px); margin-bottom:16px; }
   .yes-sub{ color:rgba(74,32,50,0.78); font-size:15px; max-width:400px; margin:0 auto; line-height:1.8; }
+  #replayBtn{
+    margin-top:26px;
+    padding:11px 22px;
+    border:1px solid rgba(143,37,71,0.22);
+    border-radius:999px;
+    background:rgba(255,255,255,0.4);
+    color:rgba(74,32,50,0.6);
+    font-family:'Quicksand', sans-serif; font-weight:600; font-size:12.5px;
+    cursor:pointer;
+    opacity:0;
+    animation: fadeUp .8s cubic-bezier(.16,1,.3,1) 1.4s forwards;
+    transition: background .25s ease, color .25s ease;
+  }
+  #replayBtn:hover{ background:rgba(255,255,255,0.65); color:var(--maroon); }
 
   #confettiLayer{ position:fixed; inset:0; pointer-events:none; z-index:30; overflow:hidden; }
   .confetti-piece{ position:absolute; top:-30px; animation: confettiFall linear infinite; will-change:transform; filter: drop-shadow(0 2px 3px rgba(143,37,71,0.2)); }
@@ -330,6 +500,10 @@
     .polaroid-native img{ height:128px; }
     .letter-card{ padding:46px 22px 32px; }
     .photo-locket{ width:38px; height:38px; }
+    .moon{ width:44px !important; height:44px !important; }
+    .reason-card{ width:128px; font-size:13.5px; padding:14px 13px 12px; }
+    .envelope{ width:160px; height:106px; }
+    .envelope-flap{ height:54px; }
   }
 </style>
 </head>
@@ -349,6 +523,13 @@
   <div class="dot" data-step="3"></div>
 </div>
 
+<div class="moon" style="top: calc(6% + env(safe-area-inset-top)); left:9%; width:60px; height:60px;"></div>
+
+<div class="sky-clouds" id="skyClouds"></div>
+<div class="stars-layer" id="starsLayer"></div>
+<canvas id="glitterCanvas"></canvas>
+<canvas id="fireworksCanvas"></canvas>
+
 <div class="grain"></div>
 <div id="ambient"></div>
 <canvas id="heartCanvas"></canvas>
@@ -359,7 +540,18 @@
 
 <!-- SCENE 1 -->
 <div id="scene-intro" class="scene">
-  <div class="letter-card">
+  <div id="envelopeStage">
+    <div class="envelope" id="envelopeTap">
+      <div class="envelope-shadow"></div>
+      <div class="envelope-letter-peek"></div>
+      <div class="envelope-body"></div>
+      <div class="envelope-flap"></div>
+      <div class="envelope-seal">🩷</div>
+    </div>
+    <p class="tap-hint" id="envelopeHint">tap to open</p>
+  </div>
+
+  <div class="letter-card" id="letterCard" style="display:none;">
     <div class="wax-seal">🩷</div>
     <div class="intro-kicker">a little something for my baby</div>
     <div id="letterLine"><span id="introCursor"></span></div>
@@ -391,11 +583,23 @@
       </div>
       <div class="polaroid" style="--r:-4deg; --d:.24s;">
         <img src="assets/memory-2.jpg" alt="">
-        <div class="cap">hehehe , love u baho </div>
+        <div class="cap">happy birthday, love</div>
       </div>
       <div class="polaroid" style="--r:6deg; --d:.36s;">
         <img src="assets/memory-3.jpg" alt="">
         <div class="cap">that day 🌸</div>
+      </div>
+    </div>
+
+    <div class="reasons-row">
+      <div class="reason-card" data-n="1" style="--r:-4deg; --d:.6s;">
+        kasi sa bawat away natin, mas lalo lang akong natuto na mahalin ka ng tama 🩷
+      </div>
+      <div class="reason-card" data-n="2" style="--r:3deg; --d:.75s;">
+        kasi beige at peonies pa lang, alam ko na — ikaw na 🌸
+      </div>
+      <div class="reason-card" data-n="3" style="--r:-2deg; --d:.9s;">
+        kasi baby, love — sa lahat ng tawag, ikaw lang gusto kong sabihin araw-araw ✨
       </div>
     </div>
   </div>
@@ -405,7 +609,7 @@
       <div class="msg-tag">🎀 a little secret</div>
       <div class="name-row">
         <div class="photo-locket"><img src="assets/memory-1.jpg" alt=""></div>
-        <div class="to-name glow-text">baby</div>
+        <div class="to-name glow-text shimmer-text">baby</div>
       </div>
       <div class="fav-note">beige &amp; peonies kind of girl 🌸</div>
       <p class="msg-body">sa bawat away at pagtatalo natin, mas tumitibay ang pagmamahal ko sa'yo.</p>
@@ -424,9 +628,10 @@
 <div id="scene-yes" class="scene">
   <div>
     <div class="yes-emoji">🎀💗</div>
-    <div class="stamp">✓ officially taken nako guys</div>
-    <div class="yes-title glow-text">ouuuu shiii</div>
+    <div class="stamp">✓ officially taken</div>
+    <div class="yes-title glow-text shimmer-text">FUCK YEAHHH!</div>
     <p class="yes-sub">mahal kita, baby. forever starts today, baby. sa'yo lang lahat 🩷</p>
+    <button id="replayBtn">watch it again ↺</button>
   </div>
 </div>
 <div id="confettiLayer"></div>
@@ -457,6 +662,221 @@
   function setStep(n){
     dotEls.forEach((d, i)=> d.classList.toggle('active', i === n));
   }
+
+  // ---------- dusk sky: clouds ----------
+  const skyClouds = document.getElementById('skyClouds');
+  const cloudLayers = [
+    { count: 3, top: [4, 16],  w: [140, 190], opacity: [0.28, 0.4],  dur: [95, 130] }, // far, small, faint, slow
+    { count: 3, top: [14, 30], w: [190, 260], opacity: [0.42, 0.58], dur: [65, 90]  }, // mid
+    { count: 2, top: [26, 42], w: [260, 340], opacity: [0.6, 0.75],  dur: [42, 58]  }  // near, big, fast
+  ];
+  const rand = (a,b) => a + Math.random()*(b-a);
+  cloudLayers.forEach(layer=>{
+    for(let i=0;i<layer.count;i++){
+      const c = document.createElement('div');
+      c.className = 'cloud';
+      const w = rand(layer.w[0], layer.w[1]);
+      c.style.width = w + 'px';
+      c.style.height = (w*0.4) + 'px';
+      c.style.top = rand(layer.top[0], layer.top[1]) + 'vh';
+      c.style.opacity = rand(layer.opacity[0], layer.opacity[1]).toFixed(2);
+      c.style.animationDuration = rand(layer.dur[0], layer.dur[1]) + 's';
+      c.style.animationDelay = (-rand(0, layer.dur[1])) + 's'; // stagger so they don't all start bunched at the left edge
+      skyClouds.appendChild(c);
+    }
+  });
+
+  // ---------- dusk sky: twinkling stars ----------
+  const starsLayer = document.getElementById('starsLayer');
+  function spawnStar(container, opts){
+    const s = document.createElement('div');
+    s.className = opts.burst ? 'star star-burst' : 'star';
+    const size = rand(opts.size[0], opts.size[1]);
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = rand(opts.left[0], opts.left[1]) + 'vw';
+    s.style.top = rand(opts.top[0], opts.top[1]) + 'vh';
+    s.style.boxShadow = `0 0 ${size*2}px ${size*0.5}px rgba(255,255,255,${opts.glow || 0.7})`;
+    if(!opts.burst){
+      // regular twinkle: single animation, timing fully driven inline
+      s.style.animationDuration = rand(2, 4) + 's';
+      s.style.animationDelay = rand(0, 3) + 's';
+    }
+    // burst stars keep the exact two-stage timing defined in .star-burst
+    // (pop in, then settle into a twinkle) — don't touch it here
+    container.appendChild(s);
+    return s;
+  }
+  for(let i=0;i<16;i++){
+    spawnStar(starsLayer, { size:[2,3.5], left:[0,100], top:[0,38], glow:0.6 });
+  }
+
+  // called at the "yes" celebration — the whole sky blooms with extra stars
+  function bloomNightSky(){
+    for(let i=0;i<26;i++){
+      setTimeout(()=>{
+        spawnStar(starsLayer, { size:[2.5,4.5], left:[0,100], top:[0,68], glow:0.85, burst:true });
+      }, i*45);
+    }
+  }
+
+  // ---------- ambient glitter dust ----------
+  // deliberately separate from the heart canvas: this one runs from the
+  // moment the page loads all the way through every scene, forever — it
+  // has to be essentially free, so it's just a handful of tiny circles
+  // with a sine-wave twinkle, no text, no per-frame allocation.
+  (function glitterDust(){
+    const gCanvas = document.getElementById('glitterCanvas');
+    const gctx = gCanvas.getContext('2d', { alpha:true });
+    const gDPR = Math.min(window.devicePixelRatio || 1, 2);
+    let flecks = [];
+    let gElapsed = 0;
+    let gLast = null;
+
+    function seedFlecks(cssW, cssH){
+      const count = Math.round((cssW*cssH) / 22000); // scales gently with screen size
+      flecks = [];
+      for(let i=0;i<count;i++){
+        flecks.push({
+          x: Math.random()*cssW,
+          y: Math.random()*cssH,
+          r: 0.7 + Math.random()*1.6,
+          phase: Math.random()*Math.PI*2,
+          speed: 0.6 + Math.random()*0.8,
+          driftX: (Math.random()*10-5),
+          gold: Math.random() < 0.4
+        });
+      }
+    }
+
+    function gResize(){
+      const cssW = window.innerWidth, cssH = window.innerHeight;
+      gCanvas.width = Math.floor(cssW*gDPR);
+      gCanvas.height = Math.floor(cssH*gDPR);
+      gCanvas.style.width = cssW+'px';
+      gCanvas.style.height = cssH+'px';
+      seedFlecks(cssW, cssH);
+    }
+
+    let gResizeTimer = null;
+    window.addEventListener('resize', ()=>{
+      clearTimeout(gResizeTimer);
+      gResizeTimer = setTimeout(gResize, 200);
+    });
+    gResize();
+
+    function gDraw(time){
+      if(gLast === null) gLast = time;
+      const dt = Math.min((time-gLast)/1000, 0.05);
+      gLast = time;
+      gElapsed += dt;
+
+      const cssW = window.innerWidth, cssH = window.innerHeight;
+      gctx.setTransform(gDPR,0,0,gDPR,0,0);
+      gctx.clearRect(0,0,cssW,cssH);
+
+      for(let i=0;i<flecks.length;i++){
+        const f = flecks[i];
+        const twinkle = 0.25 + 0.55 * (0.5 + 0.5*Math.sin(gElapsed*f.speed + f.phase));
+        const y = ((f.y + gElapsed*4) % (cssH+20)) - 10;
+        const x = f.x + Math.sin(gElapsed*0.3 + f.phase) * f.driftX;
+        gctx.beginPath();
+        gctx.arc(x, y, f.r, 0, Math.PI*2);
+        gctx.fillStyle = f.gold
+          ? `rgba(216,166,85,${twinkle*0.8})`
+          : `rgba(255,255,255,${twinkle*0.9})`;
+        gctx.fill();
+      }
+      requestAnimationFrame(gDraw);
+    }
+    requestAnimationFrame(gDraw);
+  })();
+
+  // ---------- fireworks (Yes celebration only) ----------
+  const fireworks = (function(){
+    const fCanvas = document.getElementById('fireworksCanvas');
+    const fctx = fCanvas.getContext('2d', { alpha:true });
+    const fDPR = Math.min(window.devicePixelRatio || 1, 2);
+    let fParticles = [];
+    let fRunning = false;
+    let fLast = null;
+    const COLORS = ['224,82,122', '255,143,176', '216,166,85', '255,246,232', '143,37,71'];
+
+    function fResize(){
+      const cssW = window.innerWidth, cssH = window.innerHeight;
+      fCanvas.width = Math.floor(cssW*fDPR);
+      fCanvas.height = Math.floor(cssH*fDPR);
+      fCanvas.style.width = cssW+'px';
+      fCanvas.style.height = cssH+'px';
+    }
+    window.addEventListener('resize', fResize);
+    fResize();
+
+    function burst(x, y){
+      const count = 34 + Math.floor(Math.random()*14);
+      const color = COLORS[Math.floor(Math.random()*COLORS.length)];
+      for(let i=0;i<count;i++){
+        const angle = (Math.PI*2*i)/count + Math.random()*0.2;
+        const speed = 2.4 + Math.random()*2.6;
+        fParticles.push({
+          x, y,
+          vx: Math.cos(angle)*speed,
+          vy: Math.sin(angle)*speed,
+          life: 1,
+          decay: 0.012 + Math.random()*0.01,
+          color,
+          size: 1.6 + Math.random()*1.6
+        });
+      }
+    }
+
+    function fDraw(time){
+      if(fLast === null) fLast = time;
+      const dt = Math.min((time-fLast)/1000, 0.05);
+      fLast = time;
+
+      const cssW = window.innerWidth, cssH = window.innerHeight;
+      fctx.setTransform(fDPR,0,0,fDPR,0,0);
+      fctx.clearRect(0,0,cssW,cssH);
+
+      fParticles.forEach(p=>{
+        p.vy += 1.4*dt; // gravity
+        p.vx *= (1 - 0.4*dt); // drag
+        p.vy *= (1 - 0.4*dt);
+        p.x += p.vx * (dt*60);
+        p.y += p.vy * (dt*60);
+        p.life -= p.decay;
+        if(p.life > 0){
+          fctx.beginPath();
+          fctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+          fctx.fillStyle = `rgba(${p.color}, ${Math.max(0,p.life)})`;
+          fctx.fill();
+        }
+      });
+      fParticles = fParticles.filter(p => p.life > 0);
+
+      if(fParticles.length > 0){
+        requestAnimationFrame(fDraw);
+      } else {
+        fRunning = false;
+        fCanvas.style.display = 'none';
+      }
+    }
+
+    function start(){
+      const cssW = window.innerWidth, cssH = window.innerHeight;
+      fCanvas.style.display = 'block';
+      const bursts = 5 + Math.floor(Math.random()*2);
+      for(let b=0; b<bursts; b++){
+        setTimeout(()=>{
+          burst(cssW*(0.2+Math.random()*0.6), cssH*(0.16+Math.random()*0.3));
+          if(!fRunning){ fRunning = true; fLast = null; requestAnimationFrame(fDraw); }
+        }, b*420);
+      }
+    }
+
+    return { start };
+  })();
 
   // ---------- background music ----------
   // true silent autoplay is blocked by every modern browser — the earliest
@@ -526,7 +946,33 @@
       setStep(0);
     }
   }
-  setTimeout(typeChar, 550);
+
+  // ---------- envelope open sequence ----------
+  const envelopeTap = document.getElementById('envelopeTap');
+  const envelopeStage = document.getElementById('envelopeStage');
+  const envelopeHint = document.getElementById('envelopeHint');
+  const letterCard = document.getElementById('letterCard');
+  let envelopeOpened = false;
+
+  function openEnvelope(){
+    if(envelopeOpened) return;
+    envelopeOpened = true;
+    envelopeTap.classList.add('opened');
+    envelopeHint.style.transition = 'opacity .3s ease';
+    envelopeHint.style.opacity = '0';
+    setTimeout(()=>{
+      envelopeStage.style.transition = 'opacity .5s ease';
+      envelopeStage.style.opacity = '0';
+      setTimeout(()=>{
+        envelopeStage.style.display = 'none';
+        letterCard.style.display = 'block';
+        void letterCard.offsetWidth;
+        letterCard.classList.add('show');
+        setTimeout(typeChar, 350);
+      }, 480);
+    }, 950);
+  }
+  envelopeTap.addEventListener('click', openEnvelope);
 
   // ---------- cinematic scene transition helper ----------
   function dissolve(hideEl, showEl, showDisplay){
@@ -568,7 +1014,7 @@
     revealLabel.classList.remove('show');
     setTimeout(()=>{ revealLabel.style.display = 'none'; }, 500);
     memoriesPanel.classList.add('show');
-    setTimeout(goQuestion, 4400);
+    setTimeout(goQuestion, 6300);
   }
 
   function goQuestion(){
@@ -900,7 +1346,7 @@
   function launchConfetti(){
     const layer = document.getElementById('confettiLayer');
     const icons = ['🩷','💗','✨','🎀','💌','🌸'];
-    for(let k=0;k<34;k++){
+    for(let k=0;k<30;k++){
       const el = document.createElement('span');
       el.className = 'confetti-piece';
       el.textContent = icons[Math.floor(Math.random()*icons.length)];
@@ -913,16 +1359,40 @@
       layer.appendChild(el);
       setTimeout(()=>el.remove(), 6500);
     }
+    // real gold glitter specks mixed in — smaller, denser, catches the light
+    for(let k=0;k<22;k++){
+      const g = document.createElement('span');
+      g.className = 'confetti-piece';
+      g.textContent = Math.random() < 0.5 ? '✦' : '·';
+      g.style.left = (Math.random()*100)+'vw';
+      g.style.fontSize = (8+Math.random()*10)+'px';
+      g.style.color = '#d8a655';
+      g.style.textShadow = '0 0 6px rgba(216,166,85,0.8)';
+      g.style.setProperty('--sway1', (Math.random()*44-22)+'px');
+      g.style.setProperty('--sway2', (Math.random()*44-22)+'px');
+      g.style.animationDuration = (3.4+Math.random()*2.6)+'s';
+      g.style.animationDelay = (Math.random()*1.4)+'s';
+      layer.appendChild(g);
+      setTimeout(()=>g.remove(), 7000);
+    }
   }
 
   yesBtn.addEventListener('click', function(e){
     e.stopPropagation();
     progressDots.classList.remove('show');
+    bloomNightSky();
     dissolve(sceneReveal, sceneYes, 'flex');
     setTimeout(()=>{
       launchConfetti();
+      fireworks.start();
       setInterval(launchConfetti, 3000);
+      setInterval(()=> fireworks.start(), 3600);
     }, 560);
+  });
+
+  document.getElementById('replayBtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    location.reload();
   });
 })();
 </script>
